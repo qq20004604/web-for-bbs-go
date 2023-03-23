@@ -16,5 +16,5 @@ export default {
         Vue.prototype.$getHashParameter = URL.getHashParameter;
         Vue.prototype.$setHashParameter = URL.setHashParameter;
         Vue.prototype.$getHashParams = URL.getHashParams;
-    }
+    },
 };

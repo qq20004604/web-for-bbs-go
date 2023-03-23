@@ -12,7 +12,7 @@ export default {
                 if (this.$options.name) {
                     window[this.$options.name] = this;
                 }
-            }
+            },
 
         });
 
@@ -20,5 +20,5 @@ export default {
         Vue.prototype.$setPageTitle = function (title) {
             document.getElementsByTagName('title')[0].innerText = title;
         };
-    }
+    },
 };

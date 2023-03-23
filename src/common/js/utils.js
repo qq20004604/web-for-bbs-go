@@ -9,17 +9,17 @@ export {
     idCheck,
     formatMobile,
     CertificateNumber,
-    parameter
+    parameter,
     // keyToCode
 };
 
 // 传参方法，把字符串转成对象传过去
 const parameter = (n) => {
-    if (!n) return '';
+    if (!n) {return '';}
     let url = '';
     let num = '';
-    for (let k in n) {
-        let value = n[k] !== undefined ? n[k] : '';
+    for (const k in n) {
+        const value = n[k] !== undefined ? n[k] : '';
         url += '&' + k + '=' + encodeURIComponent(value);
         num = url ? url.substring(1) : '';
     }
@@ -31,9 +31,9 @@ const parameter = (n) => {
  * @return {String} 返回格式化后的号码，如：610330**********8
  * */
 const CertificateNumber = (n) => {
-    if (!n) return '';
-    let reg = /^(\d{6})\d*(\d{1})$/;
-    let num = ('' + n).replace(reg, '$1****$2');
+    if (!n) {return '';}
+    const reg = /^(\d{6})\d*(\d{1})$/;
+    const num = ('' + n).replace(reg, '$1****$2');
     return num;
 };
 /**
@@ -47,7 +47,7 @@ const formatMobile = (n) => {
         return '-';
     }
     // 将数字转为字符串
-    let s = String(n);
+    const s = String(n);
     return s.slice(0, 3) + '****' + s.slice(-4);
 };
 /**
@@ -55,18 +55,18 @@ const formatMobile = (n) => {
  * @param {*} num
  */
 const numberFormat = (n) => {
-    if (n === undefined) return '';
-    let num = n.toString();
+    if (n === undefined) {return '';}
+    const num = n.toString();
     let decimals = '00';
     // 判断是否有小数
     num.indexOf('.') > -1 ? (decimals = num.split('.')[1].toString()
         .substr(0, 2)) : decimals;
-    let len = num.length;
+    const len = num.length;
     if (len <= 3) {
         return num;
     } else {
         let temp = '';
-        let remainder = len % 3;
+        const remainder = len % 3;
         decimals ? (temp = '.' + decimals) : temp;
         if (remainder > 0) {
             // 不是3的整数倍
@@ -96,7 +96,7 @@ const numberUnitBig = (n) => {
     let str = '';
     n += '00';
 
-    let indexpoint = n.indexOf('.'); // 如果是小数，截取小数点前面的位数
+    const indexpoint = n.indexOf('.'); // 如果是小数，截取小数点前面的位数
 
     if (indexpoint >= 0) {
         n = n.substring(0, indexpoint) + n.substr(indexpoint + 1, 2); // 若为小数，截取需要使用的unit单位
@@ -165,9 +165,9 @@ const permissions = (key) => {
  *
  */
 const idCheck = (idNo) => {
-    let num = idNo.toUpperCase();
+    const num = idNo.toUpperCase();
     // 身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。
-    let reg = /^(\d{18,18}|\d{15,15}|\d{17,17}X)$/;
+    const reg = /^(\d{18,18}|\d{15,15}|\d{17,17}X)$/;
     if (!reg.test(num)) {
         return false;
     }
@@ -177,9 +177,9 @@ const idCheck = (idNo) => {
     len = num.length;
     if (len === 15) {
         re = new RegExp(/^(\d{6})(\d{2})(\d{2})(\d{2})(\d{3})$/);
-        let arrSplit = num.match(re);
+        const arrSplit = num.match(re);
         // 检查生日日期是否正确
-        let dtmBirth = new Date(
+        const dtmBirth = new Date(
             '19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
         let bGoodDay;
         bGoodDay =
@@ -192,9 +192,9 @@ const idCheck = (idNo) => {
     }
     if (len === 18) {
         re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/);
-        let arrSplit = num.match(re);
+        const arrSplit = num.match(re);
         // 检查生日日期是否正确
-        let dtmBirth = new Date(
+        const dtmBirth = new Date(
             arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
         let bGoodDay;
         bGoodDay =
@@ -209,10 +209,10 @@ const idCheck = (idNo) => {
             // 11-2的规定生成，X可以认为是数字10。
             let valnum;
             // eslint-disable-next-line no-array-constructor
-            let arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5,
+            const arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5,
                 8, 4, 2);
             // eslint-disable-next-line no-array-constructor
-            let arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4',
+            const arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4',
                 '3', '2');
             // eslint-disable-next-line one-let
             let nTemp = 0;

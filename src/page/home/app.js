@@ -13,14 +13,16 @@ import App from './App.vue';
 import CommonUtils from '@/common/js/pre_setting.js';
 
 // 浏览器的title（就是显示在tag标签的本页面名字）
-const TITLE = '测试demo，纯vue';
+const TITLE = '登录';
 
 CommonUtils.setTitle(TITLE);
 CommonUtils.init();
+const i18n = CommonUtils.geti18n();
 
 /* eslint-disable no-new */
 new Vue({
     el: '#app',
     template: '<App/>',
-    components: { App }
+    components: {App},
+    i18n,
 });

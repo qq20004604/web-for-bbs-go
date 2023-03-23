@@ -90,6 +90,6 @@ const URL = {
         const newParams = Object.assign(params, obj);
         const hashStr = this.$makeOnlySearchURL(newParams);
         location.hash = '#' + hashStr;
-    }
+    },
 };
 export default URL;

@@ -1,4 +1,4 @@
-import { Message } from 'element-ui';
+import {Message} from 'element-ui';
 
 window.isMessageREpate = true;
 
@@ -8,7 +8,7 @@ class User {
         if (Info.code === 401 && window.isMessageREpate) {
             Message({
                 message: '登陆认证已过期,请重新登陆！3 秒后重定向到登录页',
-                type: 'warning'
+                type: 'warning',
             });
             sessionStorage.clear();
             setTimeout(() => {
@@ -21,9 +21,9 @@ class User {
                 {
                     message: Info.msg,
                     type: 'warning',
-                    wti_type: 'message'
+                    wti_type: 'message',
                 },
-                '*'
+                '*',
             );
         }
     }

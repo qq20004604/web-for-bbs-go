@@ -5,15 +5,12 @@
  * 功能说明：
  *
  */
-import { get, post } from '../config/http';
+import {post} from '../config/http';
 
 const $ajax = {
     // 示例
-    test (payload) {
-        return post('/test', payload);
-    },
-    testGet (payload) {
-        return get('/test', payload);
+    login (payload) {
+        return post('/login', payload);
     },
 };
 
@@ -21,6 +18,6 @@ export default {
     install: function (Vue) {
         // 添加方法，可以修改 <title> 标签的内容
         Vue.prototype.$ajax = $ajax;
-    }
+    },
 };
 

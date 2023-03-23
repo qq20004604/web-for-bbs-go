@@ -6,7 +6,7 @@
  *
  */
 import axios from 'axios';
-import { baseURL } from './env.js';
+import {baseURL} from './env.js';
 // 是否启用使用form表单形式提交数据，默认不启用
 const USE_FORM = false;
 
@@ -47,12 +47,22 @@ const get = (url, params) => {
     });
 };
 
+const responseSuccess = response => {
+    return response.data;
+};
+const responseFault = error => {
+    return Promise.reject(error.response.data);
+};
+
+// http response 拦截器
+axios.interceptors.response.use(responseSuccess, responseFault);
+
 // 生成 axios 对象
 function generateAxios (config) {
     const newAxios = axios.create(config);
-    newAxios.interceptors.request.use(requestSuccess, requestFault);
+    // newAxios.interceptors.request.use(requestSuccess, requestFault);
     newAxios.interceptors.response.use(responseSuccess, responseFault);
     return newAxios;
 }
 
-export { post, get, baseURL, generateAxios };
+export {post, get, baseURL, generateAxios};

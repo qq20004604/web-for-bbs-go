@@ -1,21 +1,49 @@
 ﻿const path = require('path');
 const webpack = require('webpack');
+const fs = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const {VueLoaderPlugin} = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
-const gitManager = require('./git_manage.js').gitManager;
-const fs = require('fs');
+
 const isProd = process.env.npm_lifecycle_event.indexOf('build') > -1;
-const Tag = isProd ? gitManager.getCurrentCommitTagSync() : '';
+const Tag = isProd ? require('./git_manage.js').gitManager.getCurrentCommitTagSync() : '';
+const resolve = (dir) => path.join(__dirname, '..', dir);
 
-function resolve (dir) {
-    return path.join(__dirname, '..', dir);
-}
 
-//
+const cssLoaderConfig = {
+    loader: 'css-loader',
+    options: {
+        modules: false,
+        // sourceMap: !isProd,
+        sourceMap: false,
+    },
+};
+
+const cssConfig = isProd ? [
+    MiniCssExtractPlugin.loader,
+    cssLoaderConfig,
+    {
+        loader: 'postcss-loader',
+        options: {
+            // sourceMap: !isProd,
+            sourceMap: false,
+        },
+    },
+    {
+        loader: 'less-loader', // compiles Less to CSS
+    },
+] : [
+    'vue-style-loader',
+    'style-loader',
+    cssLoaderConfig,
+    {
+        loader: 'less-loader', // compiles Less to CSS
+    },
+];
+
 const getEntries = function () {
     // 获取page目录
     const root = resolve('src/page');
@@ -54,10 +82,8 @@ const getEntries = function () {
         return new HtmlWebpackPlugin({
             filename: resolve(`dist/${item.filename}.html`),
             template: resolve(
-                `index_${process.env.npm_lifecycle_event === 'build'
-                    ? 'prd'
-                    : 'dev'}.html`),
-            title: '标题',
+                `index_${isProd ? 'prd' : 'dev'}.html`),
+            title: '极简论坛',
             minify: { // 对index.html压缩
                 collapseWhitespace: isProd, // 去掉index.html的空格
                 removeAttributeQuotes: isProd, // 去掉引号
@@ -74,49 +100,20 @@ const getEntries = function () {
     return result;
 };
 const entries = getEntries();
-
-const cssLoaderConfig = {
-    loader: 'css-loader',
-    options: {
-        modules: false,
-        // sourceMap: !isProd,
-        sourceMap: false,
-    },
-};
-
-const cssConfig = isProd ? [
-    MiniCssExtractPlugin.loader,
-    cssLoaderConfig,
-    {
-        loader: 'postcss-loader',
-        options: {
-            // sourceMap: !isProd,
-            sourceMap: false,
-        },
-    },
-    {
-        loader: 'less-loader', // compiles Less to CSS
-    },
-] : [
-    'vue-style-loader',
-    'style-loader',
-    cssLoaderConfig,
-    {
-        loader: 'less-loader', // compiles Less to CSS
-    },
-];
-
 const config = {
+    // entry: entries.entry,
     entry: entries.entry,
     // 出口文件
     output: {
         path: resolve(`dist${Tag ? `/${Tag}` : ''}`),
         // 文件名，将打包好的导出为bundle.js
         filename: isProd ? 'js/[name].js' : '[name].js',
+        publicPath: isProd ? `${Tag}/` : '/',
     },
     // 开发模式
     mode: 'development',
-    devtool: isProd ? undefined : 'inline-source-map', // 使用 sourcemap，编辑后会很慢
+    // devtool: 'cheap-module-source-map',
+    devtool: isProd ? undefined : 'cheap-module-source-map', // 使用 sourcemap，编辑后会很慢
     // devtool: 'eval', // 禁用 sourcemap，二次打包很快
     // webpack-dev-server
     devServer: {
@@ -124,20 +121,17 @@ const config = {
         compress: false, // 开启Gzip压缩
         contentBase: resolve('public'), // 将 public 目录下的文件，作为可访问文件。
         hot: true,
-        port: '8080',
-        publicPath: '',
+        port: 9911,
         open: true, // 自动打开浏览器
-        // overlay: { // 当出现编译器错误或警告时，就在网页上显示一层黑色的背景层和错误信息
-        //     errors: true
-        // },
+        openPage: 'login.html', // 指定要打开的页面
+        historyApiFallback: true,
         progress: false,
         proxy: {
-            '/api': {
+            '/api/': {
                 target: 'http://127.0.0.1:7001',
                 changeOrigin: true,
                 pathRewrite: {
-                    '^/api/api': '',
-                    '^/api': '',
+                    '^/api': '/bbs',
                 },
             },
         },
@@ -192,11 +186,7 @@ const config = {
                             esModule: false,
                             // 这个是对publicPath使用的
                             name (resourcePath, resourceQuery) {
-                                if (!isProd) {
-                                    return '[name].[hash:10].[ext]';
-                                }
-
-                                return '[contenthash].[ext]';
+                                return '[name].[ext]';
                             },
                             // name: '[name].[contenthash:10].[ext]',   // 文件名
                             publicPath: Tag
@@ -224,14 +214,13 @@ const config = {
                             esModule: false,
                             // 这个是对publicPath使用的
                             name (resourcePath, resourceQuery) {
-                                if (!isProd) {
-                                    return '[name].[hash:10].[ext]';
-                                }
-
-                                return '[contenthash].[ext]';
+                                // if (!isProd) {
+                                //     return '[name].[ext]';
+                                // }
+                                return '[name].[ext]';
                             },
                             // name: '[name].[contenthash:10].[ext]',   // 文件名
-                            publicPath: Tag ? `${Tag}/static/` : 'static/',
+                            publicPath: Tag ? `/${Tag}/static/` : '/static/',
                             // publicPath: `../static/`,
 
                             // 输出目录，表现效果相当于 outputPath + name 这样，可以直接写在name里如
@@ -265,7 +254,7 @@ const config = {
             'plugin': resolve('src/plugin'),
             // 'vue': 'vue/dist/vue.js',
             'img': resolve('src/img'),
-            vue: 'vue/dist/vue.esm.js',
+            vue: isProd ? 'vue/dist/vue.common.dev.js' : 'vue/dist/vue.js',
         },
     },
     plugins: [
@@ -280,7 +269,6 @@ const config = {
 
 if (isProd) {
     console.log('isProd', isProd);
-    config.mode = 'production';
     config.plugins = [
         ...config.plugins,
         new MiniCssExtractPlugin({ // 分离css
@@ -353,16 +341,18 @@ if (isProd) {
         'echarts': 'echarts',
     };
 } else {
+    config.mode = 'development';
     config.plugins = [
         new webpack.HotModuleReplacementPlugin(),
         ...config.plugins,
         new webpack.DefinePlugin({
             'process.env': {
-                'NODE_ENV': '"development"',
+                'NODE_ENV': JSON.stringify('development'),
                 'date': `"${new Date().toLocaleString()}"`,
             },
         }),
     ];
+
     config.optimization = { // 抽离第三方插件
         // https://webpack.docschina.org/configuration/optimization/#root
         minimize: false,

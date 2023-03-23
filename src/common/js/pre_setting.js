@@ -12,8 +12,17 @@ import http from '@/api/ajax.js';
 import URL from './url';
 import 'common/less/config.less';
 import 'element-ui/lib/theme-chalk/index.css';
+import VueHighlightJS from 'vue-highlightjs';
+import 'highlight.js/styles/atom-one-dark.css';
 import WtiForm from 'wti-form';
-import 'wti-form-themes-red';
+import {baseURL} from '@/config/env.js';
+import VueMarkdownEditor from '@kangc/v-md-editor';
+import '@kangc/v-md-editor/lib/style/base-editor.css';
+import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js';
+import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
+import VueI18n from 'vue-i18n';
+import i18nConfig from '@/i18n/main.js';
+
 
 const isProd = process.env.NODE_ENV !== 'development';
 
@@ -22,15 +31,33 @@ const CommonUtils = {
         Vue.use(URL);
         Vue.config.productionTip = !isProd;
         Vue.use(http);
-        // Vue.use(ElementUI)
+        // 国际化组件
+        Vue.use(VueI18n);
         // 按需加载
         Vue.use(Element);
+        VueMarkdownEditor.use(vuepressTheme);
+        Vue.use(VueMarkdownEditor);
         const props = {
+            // 基础 url，一般是指 axios 用的 baseURL
+            // 由于组件并不能默认使用 axios 的 baseURL，所以如果有需要，这里要特殊设置
+            baseURL: {
+                type: String,
+                default: baseURL,
+            },
+            // 全局属性配置
+            globalConfig: {
+                type: Object,
+                default: () => {
+                    return {
+                        clearable: true,
+                    };
+                },
+            },
             dynamicSelectOption: {
                 type: Object,
                 default: () => ({
                     // 这是字典接口的 url
-                    dictUrl: `${baseURL}/dict`,
+                    dictUrl: '/dict',
                     // 异步请求时，请求内容是一个对象或一个数组。
                     // 如果是对象，那么包含一个 key 和一个数组。
                     // 如果是数组，那么只有这个数组。
@@ -38,11 +65,12 @@ const CommonUtils = {
                     queryKey: 'search', // 这是请求时那个 key。如果为空，则请求时是一个数组，而不是一个对象
                     parentKey: 'parentKey', // 这是返回结果的 parentKey。意思是，同一个 parentKey 归属于同一个下拉框选项
                     value: 'code', // 这是下拉框选项的值
-                    label: 'label' // 这是下拉框选项的 label
-                })
-            }
+                    label: 'label', // 这是下拉框选项的 label
+                }),
+            },
         };
         Vue.use(WtiForm, props);
+        Vue.use(VueHighlightJS);
 
         if (!document.getElementById('app')) {
             const DOM = document.createElement('div');
@@ -51,14 +79,23 @@ const CommonUtils = {
         }
 
         window.version = process.env.date;
-        // todo 以后以下这些也归属到开发模式下用
         Vue.use(forDevelopment);
+
+
     },
     setTitle (title) {
         const titleDOM = document.getElementsByTagName('title');
         if (titleDOM.length > 0) {
             titleDOM[0].innerText = title;
         }
+    },
+
+    geti18n () {
+        const i18n = new VueI18n({
+            locale: i18nConfig.defaultLanguage, // set locale
+            messages: i18nConfig.mixin, // set locale messages
+        });
+        return i18n;
     },
 };
 

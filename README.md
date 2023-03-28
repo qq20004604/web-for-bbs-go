@@ -1,6 +1,12 @@
 ## 极简论坛的前端项目
 
-### 1、后端代码
+### 1、代码
+
+> 前端：
+
+https://github.com/qq20004604/web-for-bbs-go
+
+> 后端
 
 https://github.com/qq20004604/bbs-go-public
 

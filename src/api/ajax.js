@@ -8,9 +8,18 @@
 import {post} from '../config/http';
 
 const $ajax = {
-    // 示例
+    // 登录
     login (payload) {
         return post('/login', payload);
+    },
+    // 注册
+    register (payload) {
+        return post('/register', payload);
+    },
+
+    // 测试
+    test (payload) {
+        return post('/test', payload);
     },
 };
 

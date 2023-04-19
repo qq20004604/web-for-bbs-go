@@ -10,8 +10,7 @@ export default new Vuex.Store({
 
     // 定义全局状态
     state: {
-        dictionary: [],
-        auth: {},
+        userInfo: {},
     },
 
     // 定义 getter

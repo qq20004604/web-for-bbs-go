@@ -1,9 +1,5 @@
 export default {
-
-    updateEasy (state, {
-        key,
-        value,
-    }) {
-        state[key] = value;
+    updateUserinfo (state, value) {
+        state.userInfo = value;
     },
 };

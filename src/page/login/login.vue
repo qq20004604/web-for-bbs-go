@@ -1,6 +1,7 @@
 <template>
     <div id="login">
         <wti-form :fields="loginFields"
+                  :data="data"
                   ref="form">
             <template #login-btn>
                 <el-button type="success"
@@ -77,6 +78,12 @@
         data () {
             return {
                 loading: false,
+
+                // todo 测试数据
+                data: {
+                    account: 'admin',
+                    password: '12345678',
+                },
             };
         },
         methods: {
@@ -92,6 +99,7 @@
                                 // 说明登录成功
                                 // 先把token写入localStorage里
                                 localStorage.setItem('token', result.data.token);
+                                localStorage.setItem('tokenExpireTime', result.data.tokenExpireTime);
                                 localStorage.setItem('userInfo', JSON.stringify(result.data.userInfo));
                                 window.location.href = './home.html';
                             } else {

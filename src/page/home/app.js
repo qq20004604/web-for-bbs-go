@@ -11,9 +11,10 @@
 import Vue from 'vue';
 import App from './App.vue';
 import CommonUtils from '@/common/js/pre_setting.js';
+import store from '@/store/index.js';
 
 // 浏览器的title（就是显示在tag标签的本页面名字）
-const TITLE = '登录';
+const TITLE = '首页';
 
 CommonUtils.setTitle(TITLE);
 CommonUtils.init();
@@ -25,4 +26,5 @@ new Vue({
     template: '<App/>',
     components: {App},
     i18n,
+    store,
 });

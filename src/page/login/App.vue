@@ -33,6 +33,7 @@
     import i18nConfig from '@/i18n/main.js';
     import Login from './login.vue';
     import Register from './register.vue';
+    import user from '@/common/js/user';
 
     export default {
         created () {
@@ -44,6 +45,8 @@
             } else {
                 this.lanModel = this.$i18n.locale;
             }
+            // 检测当前是否已登录，如果登录了，则跳转到登录后页面
+            user.checkLogin(this);
         },
         name: 'App',
         data () {

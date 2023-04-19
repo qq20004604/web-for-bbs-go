@@ -16,6 +16,10 @@ const $ajax = {
     register (payload) {
         return post('/register', payload);
     },
+    // 登录检查
+    isOnline (payload) {
+        return post('/isOnline', payload);
+    },
 
     // 测试
     test (payload) {

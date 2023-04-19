@@ -2,26 +2,23 @@
     <div id="home">
         <el-tabs v-model="activeName" @tab-click="tabClick">
             <el-tab-pane label="帖子列表" name="post">
-                <PostList/>
+                <PostMain/>
             </el-tab-pane>
             <el-tab-pane label="个人信息" name="userinfo">
-                用户信息：
-                {{ userInfo }}
+                <UserMain/>
             </el-tab-pane>
             <el-tab-pane label="用户管理" name="third">
                 角色管理
             </el-tab-pane>
-            <el-tab-pane label="" name="fourth">
-                定时任务补偿
-            </el-tab-pane>
+            <el-tab-pane label="登出" name="logout"/>
         </el-tabs>
     </div>
 </template>
 <script>
 
     import i18nConfig from '@/i18n/main.js';
-    import PostList from './components/post/postList.vue';
-    import user from '@/common/js/user';
+    import PostMain from './components/post/post_main.vue';
+    import UserMain from './components/user_manage/user_main.vue';
 
     export default {
         created () {
@@ -34,7 +31,12 @@
                 this.lanModel = this.$i18n.locale;
             }
 
-            user.checkLogin(this);
+            this.$user.checkLogin(this);
+            this.$watch('activeName', v => {
+                if (v === 'logout') {
+                    this.$user.logout(this);
+                }
+            });
         },
         name: 'App',
         data () {
@@ -43,9 +45,7 @@
                 isLogin: false,
                 LanguageList: i18nConfig.LanguageList,
 
-                userInfo: JSON.parse(localStorage.getItem('userInfo', 4)),
-
-                activeName: 'post',
+                activeName: 'userinfo',
             };
         },
         computed: {},
@@ -56,7 +56,8 @@
             },
         },
         components: {
-            PostList,
+            PostMain,
+            UserMain,
         },
     };
 </script>

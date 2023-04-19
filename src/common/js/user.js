@@ -2,6 +2,7 @@ class User {
     // 用户登录后，将用户信息更新到 vuex 里
     setUserInfo (vue) {
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        console.log('setUserInfo', userInfo);
         vue.$store.commit('updateUserinfo', userInfo);
     }
 
@@ -23,26 +24,33 @@ class User {
                         // 临时添加一个缓存，避免重复判断在线状态
                         sessionStorage.setItem('recentOnline', 'true');
                         window.location.href = './home.html';
-
+                    } else {
+                        // 此时说明已经在登录后页面，将用户信息写入vuex
+                        this.setUserInfo(vue);
                     }
-                    // 否则无需特别处理
                 } else {
-                    // 此时说明已经在登录后页面，将用户信息写入vuex
-                    this.setUserInfo(vue);
+                    // 此时说明报错了，需要重新登录
+                    this.logout();
                 }
             });
-
-            return;
         } else {
-            // 如果过期了，先清空localStore，然后再判断当前是否是登录页，不是的话则跳到登录页
-            localStorage.clear();
-            sessionStorage.removeItem('recentOnline');
-            if (window.location.href.indexOf('login') === -1) {
-                window.location.href = './login.html';
-            }
+            this.logout();
+        }
+    }
+
+    logout () {
+        // 如果过期了，先清空localStore，然后再判断当前是否是登录页，不是的话则跳到登录页
+        localStorage.clear();
+        sessionStorage.removeItem('recentOnline');
+        if (window.location.href.indexOf('login') === -1) {
+            window.location.href = './login.html';
         }
     }
 
 }
 
-export default new User();
+export default {
+    install (Vue) {
+        Vue.prototype.$user = new User();
+    },
+};

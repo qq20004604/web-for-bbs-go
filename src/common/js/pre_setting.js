@@ -22,6 +22,7 @@ import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js';
 import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
 import VueI18n from 'vue-i18n';
 import i18nConfig from '@/i18n/main.js';
+import User from '@/common/js/user';
 
 
 const isProd = process.env.NODE_ENV !== 'development';
@@ -33,6 +34,7 @@ const CommonUtils = {
         Vue.use(http);
         // 国际化组件
         Vue.use(VueI18n);
+        Vue.use(User);
         // 按需加载
         Vue.use(Element);
         VueMarkdownEditor.use(vuepressTheme);

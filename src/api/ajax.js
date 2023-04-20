@@ -24,6 +24,22 @@ const $ajax = {
     logout () {
         return post('/logout');
     },
+    // 更新本人信息
+    updateUserInfo (payload) {
+        return post('/updateSelfInfo', payload);
+    },
+    // 获取用户信息
+    getUserInfo () {
+        return post('/getUserInfo');
+    },
+    // 管理员分页获取所有用户信息
+    getUsersInfoByPage (payload) {
+        return post('/getUsersInfoByPage', payload);
+    },
+    // 管理员批量更新用户状态
+    updateUserStatus (payload) {
+        return post('/updateUserStatus', payload);
+    },
 
     // 测试
     test (payload) {

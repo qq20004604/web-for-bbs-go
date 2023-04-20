@@ -14,7 +14,7 @@ import CommonUtils from '@/common/js/pre_setting.js';
 import store from '@/store/index.js';
 
 // 浏览器的title（就是显示在tag标签的本页面名字）
-const TITLE = '首页';
+const TITLE = '极简论坛';
 
 CommonUtils.setTitle(TITLE);
 CommonUtils.init();

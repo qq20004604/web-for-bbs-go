@@ -38,6 +38,22 @@ class User {
         }
     }
 
+    // 获取用户信息
+    getUserInfo (vue) {
+        vue.$ajax.getUserInfo().then(result => {
+            if (result.code === 200) {
+                // 说明成功获取到用户信息
+                localStorage.setItem('userInfo', JSON.stringify(result.data));
+                // 更新vuex里的数据
+                vue.$store.commit('updateUserinfo', result.data);
+            } else {
+                vue.$message.error(result.msg);
+            }
+        }).catch(() => {
+            vue.$message.error('获取用户信息失败');
+        });
+    }
+
     logout () {
         // 如果过期了，先清空localStore，然后再判断当前是否是登录页，不是的话则跳到登录页
         localStorage.clear();

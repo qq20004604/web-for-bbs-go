@@ -1,9 +1,35 @@
 <template>
     <div id="user-info">
-        <wti-form :fields="userInfoFields"
+        <div style="margin-bottom: 10px">
+            <el-radio-group v-model="showModel" size="small">
+                <el-radio-button label="view">查看</el-radio-button>
+                <el-radio-button label="edit">编辑</el-radio-button>
+                <el-radio-button label="changePassword">更改密码</el-radio-button>
+            </el-radio-group>
+        </div>
+        <wti-form v-show="showModel==='view'"
+                  :fields="viewFields"
                   :data="$store.state.userInfo"
-                  :text-model="isReadOnly"
-                  ref="form"/>
+                  :text-model="true"
+                  ref="formView"/>
+        <wti-form v-show="showModel==='edit'"
+                  :fields="editFields"
+                  :data="data"
+                  ref="formEdit"/>
+        <wti-form v-show="showModel==='changePassword'"
+                  :fields="passwordFields"
+                  :data="data"
+                  ref="formPassword"/>
+        <el-button v-if="showModel==='edit' || showModel==='changePassword'"
+                   @click="submitData"
+                   :loading="submiting"
+                   type="primary">
+            提交
+        </el-button>
+        <el-button v-if="showModel==='edit' || showModel==='changePassword'"
+                   @click="resetData">
+            取消更改
+        </el-button>
     </div>
 </template>
 
@@ -13,19 +39,10 @@
         data () {
             return {
                 data: {},
-                isReadOnly: true,
-            };
-        },
-        created () {},
-        mounted () {
-            // this.data = this.$store.state.userInfo;
-            // this.$watch('$store.state.userInfo', () => {
-            //     this.data = this.$store.state.userInfo;
-            // });
-        },
-        computed: {
-            userInfoFields () {
-                return [
+                showModel: 'edit',
+                submiting: false,
+
+                viewFields: [
                     {
                         label: '用户信息',
                         children: [
@@ -33,12 +50,88 @@
                                 key: 'account',
                                 type: 'input',
                                 label: '登录账号',
-                                placeholder: '请输入登录账号',
-                                rules: [
-                                    { required: true, message: '请输入登录账号', trigger: 'blur' },
-                                    { min: 4, max: 20, message: '登录账号长度应在4-20个字符之间', trigger: 'blur' },
+                                isText: true,
+                            },
+                            {
+                                key: 'name',
+                                type: 'input',
+                                label: '用户名称',
+                            },
+                            {
+                                key: 'email',
+                                type: 'input',
+                                label: '用户邮箱',
+                            },
+                            {
+                                key: 'mobile',
+                                type: 'input',
+                                label: '手机号码',
+                            },
+                            {
+                                key: 'gender',
+                                type: 'normal-select',
+                                label: '用户性别',
+                                options: [
+                                    {
+                                        value: 1,
+                                        label: '男',
+                                    },
+                                    {
+                                        value: 2,
+                                        label: '女',
+                                    },
+                                    {
+                                        value: 3,
+                                        label: '男同',
+                                    },
+                                    {
+                                        value: 4,
+                                        label: '女同',
+                                    },
+                                    {
+                                        value: 5,
+                                        label: '未告知',
+                                    },
+                                    {
+                                        value: 6,
+                                        label: '其他',
+                                    },
                                 ],
                             },
+
+                            {
+                                key: 'birthday',
+                                type: 'date-input',
+                                label: '生日',
+                            },
+                            {
+                                key: 'signature',
+                                type: 'textarea',
+                                label: '个性签名',
+                            },
+                            {
+                                key: 'company',
+                                type: 'input',
+                                label: '所在公司',
+                            },
+                            {
+                                key: 'website',
+                                type: 'input',
+                                label: '个人网站',
+                            },
+
+                            {
+                                type: 'slot-single',
+                                name: 'register-btn',
+                            },
+                        ],
+                    },
+
+                ],
+                editFields: [
+                    {
+                        label: '更改用户信息',
+                        children: [
                             {
                                 key: 'name',
                                 type: 'input',
@@ -140,10 +233,115 @@
                             },
                         ],
                     },
-                ];
+
+                ],
+
+                passwordFields: [
+                    {
+                        label: '更改密码',
+                        children: [
+                            {
+                                key: 'password',
+                                type: 'input',
+                                label: '密码',
+                                placeholder: '请输入密码',
+                                rules: [
+                                    { required: true, message: '请输入密码', trigger: 'blur' },
+                                    { min: 6, max: 40, message: '密码长度应在6-40个字符之间', trigger: 'blur' },
+                                ],
+                            },
+                            {
+                                key: 'repeatPassword',
+                                type: 'input',
+                                label: '重复密码',
+                                placeholder: '请重复输入密码',
+                                rules: [
+                                    { required: true, message: '请重复输入密码', trigger: 'blur' },
+                                    {
+                                        validator: (rule, value, callback) => {
+                                            if (value !== this.$refs.form.formData.password) {
+                                                callback(new Error('两次输入的密码不一致'));
+                                            } else {
+                                                callback();
+                                            }
+                                        },
+                                        trigger: 'blur',
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            };
+        },
+        created () {},
+        mounted () {
+            this.copyUserInfo();
+            this.$watch('$store.state.userInfo', () => {
+                this.copyUserInfo();
+            });
+        },
+        computed: {},
+        methods: {
+            copyUserInfo () {
+                const data = {};
+                Object.keys(this.$store.state.userInfo).forEach(key => {
+                    data[key] = this.$store.state.userInfo[key];
+                });
+                this.data = data;
+            },
+
+            resetData () {
+                this.copyUserInfo();
+            },
+
+            submitData () {
+                if (this.submiting) {
+                    this.$message.warning('提交中，请耐心等待');
+                    return;
+                }
+                this.submiting = true;
+                if (this.showModel === 'edit') {
+                    this.$refs.formEdit.validate((isPass, data) => {
+                        if (isPass) {
+                            console.log('这是你刚提交的数据', data);
+                            // 对提交数据和原始数据进行对比，只有不同的才会被提交
+                            let isChange = false;
+                            const payload = {};
+                            Object.keys(data).forEach(key => {
+                                if (data[key] !== this.$store.state.userInfo[key]) {
+                                    payload[key] = data[key];
+                                    isChange = true;
+                                }
+                            });
+                            console.log('这是最终提交的数据', payload);
+                            if (!isChange) {
+                                this.$message.warning('至少要有一个字段的数据改变，才有必要提交');
+                                this.submiting = false;
+                                return;
+                            }
+
+                            this.$ajax.updateUserInfo(payload).then(res => {
+                                if (res.code === 200) {
+                                    this.$message.success(res.msg);
+                                    this.$user.getUserInfo(this);
+                                } else {
+                                    this.$message.error(res.msg);
+                                }
+                            }).catch(() => {
+                                this.$message.error('服务器错误，请重试或者联系管理员');
+                            }).finally(() => {
+                                this.submiting = false;
+                            });
+                        } else {
+                            this.$message.error('校验失败！');
+                            this.submiting = false;
+                        }
+                    });
+                }
+
             },
         },
-        methods: {},
         components: {},
     };
 </script>

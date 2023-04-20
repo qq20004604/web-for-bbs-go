@@ -22,7 +22,7 @@ import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js';
 import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
 import VueI18n from 'vue-i18n';
 import i18nConfig from '@/i18n/main.js';
-import User from '@/common/js/user';
+import User from '@/plugin/user';
 
 
 const isProd = process.env.NODE_ENV !== 'development';

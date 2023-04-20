@@ -20,6 +20,10 @@ const $ajax = {
     isOnline (payload) {
         return post('/isOnline', payload);
     },
+    // 登出
+    logout () {
+        return post('/logout');
+    },
 
     // 测试
     test (payload) {

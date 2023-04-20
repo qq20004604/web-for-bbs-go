@@ -7,7 +7,7 @@
             <el-tab-pane label="个人信息" name="userinfo">
                 <UserMain/>
             </el-tab-pane>
-            <el-tab-pane label="用户管理" name="third">
+            <el-tab-pane label="用户管理" name="third" v-if="isAdmin">
                 角色管理
             </el-tab-pane>
             <el-tab-pane label="登出" name="logout"/>
@@ -34,7 +34,7 @@
             this.$user.checkLogin(this);
             this.$watch('activeName', v => {
                 if (v === 'logout') {
-                    this.$user.logout(this);
+                    this.logout();
                 }
             });
         },
@@ -48,11 +48,28 @@
                 activeName: 'userinfo',
             };
         },
-        computed: {},
+        computed: {
+            isAdmin () {
+                if (this.$store.state.userInfo.isAdmin >= 10) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+        },
         methods: {
             tabClick (tab, event) {
                 console.log(tab, event);
                 // this.activeName = tab;
+            },
+            logout () {
+                this.$ajax.logout(res => {
+                    if (res.code === 200) {
+                        this.$message.success('登出成功');
+                    }
+                });
+
+                this.$user.logout(this);
             },
         },
         components: {

@@ -17,6 +17,7 @@ const messages = {
         webCode: 'web-for-bbs-go',
         goCode: 'bbs-go-public',
         checkFailed: 'check your input!',
+        backLogin: 'Sign in →',
 
         regTitle: 'Sign up',
         submit: 'Submit',
@@ -31,6 +32,8 @@ const messages = {
         webCode: 'web-for-bbs-go（前端）',
         goCode: 'bbs-go-public（后端）',
         checkFailed: '校验失败！',
+
+        backLogin: '返回登录',
 
         regTitle: '注册用户',
         submit: '提交',

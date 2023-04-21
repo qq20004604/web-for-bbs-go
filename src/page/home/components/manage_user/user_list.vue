@@ -51,7 +51,11 @@
             <el-table-column
                 prop="birthday"
                 width="180"
-                label="生日"/>
+                label="生日">
+                <template slot-scope="scope">
+                    {{ scope.row.birthday.split(' ')[0] }}
+                </template>
+            </el-table-column>
             <el-table-column
                 prop="signature"
                 width="200"
@@ -76,6 +80,19 @@
                 prop="updatedAt"
                 width="180"
                 label="更新时间"/>
+            <el-table-column
+                fixed="right"
+                label="操作"
+                width="120">
+                <template slot-scope="scope">
+                    <el-button
+                        @click.native.prevent="updateUserInfo(scope.row)"
+                        type="text"
+                        size="small">
+                        编辑
+                    </el-button>
+                </template>
+            </el-table-column>
         </el-table>
         <el-pagination layout="total, prev, pager, next, jumper"
                        background
@@ -121,10 +138,16 @@
                 </div>
             </div>
         </el-drawer>
+        <UpdateUserInfo v-if="isUpdatingUserInfo"
+                        :user-info="userInfo"
+                        :load-user-list="loadUserList"
+                        :close-update-user-info="closeUpdateUserInfo"/>
     </div>
 </template>
 
 <script>
+    import UpdateUserInfo from './update_user_info.vue';
+
     export default {
         name: 'UserList',
         data () {
@@ -134,6 +157,9 @@
 
                 isUpdatingStatus: false,
                 toStatus: '',
+
+                isUpdatingUserInfo: false,
+                userInfo: null,
 
                 multipleSelection: [],
                 statusFilters: [
@@ -156,7 +182,11 @@
         computed: {},
         methods: {
             loadUserList (page) {
-                this.currentPage = page;
+                if (!page) {
+                    page = this.currentPage;
+                } else {
+                    this.currentPage = page;
+                }
                 this.$ajax.getUsersInfoByPage({
                     page,
                 }).then(res => {
@@ -166,6 +196,9 @@
                             return;
                         }
                         this.userList = res.data.list;
+                        this.userList.forEach(user => {
+                            user.birthday = user.birthday.split(' ')[0];
+                        });
                         this.totalUser = res.data.total_user;
                         this.totalPage = res.data.total_page;
                         this.countPerPage = res.data.count_per_page;
@@ -211,8 +244,20 @@
                     this.$message.error('服务器错误，请重试');
                 });
             },
+
+            updateUserInfo (row) {
+                this.isUpdatingUserInfo = true;
+                this.userInfo = row;
+            },
+
+            closeUpdateUserInfo () {
+                this.isUpdatingUserInfo = false;
+                this.userInfo = null;
+            },
         },
-        components: {},
+        components: {
+            UpdateUserInfo,
+        },
     };
 </script>
 

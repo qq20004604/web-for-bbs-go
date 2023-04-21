@@ -42,10 +42,13 @@ class User {
     getUserInfo (vue) {
         vue.$ajax.getUserInfo().then(result => {
             if (result.code === 200) {
+                const data = result.data;
+                // 生日要特别处理一下
+                data.birthday = data.birthday.split(' ')[0];
                 // 说明成功获取到用户信息
-                localStorage.setItem('userInfo', JSON.stringify(result.data));
+                localStorage.setItem('userInfo', JSON.stringify(data));
                 // 更新vuex里的数据
-                vue.$store.commit('updateUserinfo', result.data);
+                vue.$store.commit('updateUserinfo', data);
             } else {
                 vue.$message.error(result.msg);
             }

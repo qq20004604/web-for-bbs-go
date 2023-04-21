@@ -25,7 +25,7 @@ const $ajax = {
         return post('/logout');
     },
     // 更新本人信息
-    updateUserInfo (payload) {
+    updateSelfInfo (payload) {
         return post('/updateSelfInfo', payload);
     },
     // 获取用户信息
@@ -39,6 +39,10 @@ const $ajax = {
     // 管理员批量更新用户状态
     updateUserStatus (payload) {
         return post('/updateUserStatus', payload);
+    },
+    // 管理员修改其他用户信息
+    updateUserInfo (payload) {
+        return post('/updateUserInfo', payload);
     },
 
     // 测试

@@ -307,11 +307,23 @@
                             console.log('这是你刚提交的数据', data);
                             // 对提交数据和原始数据进行对比，只有不同的才会被提交
                             let isChange = false;
+                            let isError = false;
                             const payload = {};
                             Object.keys(data).forEach(key => {
                                 if (data[key] !== this.$store.state.userInfo[key]) {
                                     payload[key] = data[key];
                                     isChange = true;
+                                    // 如果是生日，则在后面补位
+                                    if (key === 'birthday') {
+                                        // 如果生日为空，后端会认为没有修改这个值，所以是不能这么做的
+                                        if (!payload[key]) {
+                                            delete payload[key];
+                                            this.$message.error('生日不能为空');
+                                            isError = true;
+                                        } else {
+                                            payload[key] = payload[key] + ' 00:00:00';
+                                        }
+                                    }
                                 }
                             });
                             console.log('这是最终提交的数据', payload);
@@ -320,8 +332,12 @@
                                 this.submiting = false;
                                 return;
                             }
+                            if (isError) {
+                                this.submiting = false;
+                                return;
+                            }
 
-                            this.$ajax.updateUserInfo(payload).then(res => {
+                            this.$ajax.updateSelfInfo(payload).then(res => {
                                 if (res.code === 200) {
                                     this.$message.success(res.msg);
                                     this.$user.getUserInfo(this);

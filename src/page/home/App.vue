@@ -7,8 +7,8 @@
             <el-tab-pane label="个人信息" name="userinfo">
                 <UserMain/>
             </el-tab-pane>
-            <el-tab-pane label="用户管理" name="third" v-if="isAdmin">
-                角色管理
+            <el-tab-pane label="用户管理" name="manageUser" v-if="isAdmin">
+                <ManageUser/>
             </el-tab-pane>
             <el-tab-pane label="登出" name="logout"/>
         </el-tabs>
@@ -18,7 +18,8 @@
 
     import i18nConfig from '@/i18n/main.js';
     import PostMain from './components/post/post_main.vue';
-    import UserMain from './components/user_manage/user_main.vue';
+    import UserMain from './components/user_info/user_main.vue';
+    import ManageUser from './components/manage_user/manage_user.vue';
 
     export default {
         created () {
@@ -45,7 +46,7 @@
                 isLogin: false,
                 LanguageList: i18nConfig.LanguageList,
 
-                activeName: 'userinfo',
+                activeName: 'manageUser',
             };
         },
         computed: {
@@ -75,6 +76,7 @@
         components: {
             PostMain,
             UserMain,
+            ManageUser,
         },
     };
 </script>

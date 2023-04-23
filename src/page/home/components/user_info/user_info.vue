@@ -259,7 +259,7 @@
                                     { required: true, message: '请重复输入密码', trigger: 'blur' },
                                     {
                                         validator: (rule, value, callback) => {
-                                            if (value !== this.$refs.form.formData.password) {
+                                            if (value !== this.$refs.formPassword.formData.password) {
                                                 callback(new Error('两次输入的密码不一致'));
                                             } else {
                                                 callback();
@@ -304,7 +304,6 @@
                 if (this.showModel === 'edit') {
                     this.$refs.formEdit.validate((isPass, data) => {
                         if (isPass) {
-                            console.log('这是你刚提交的数据', data);
                             // 对提交数据和原始数据进行对比，只有不同的才会被提交
                             let isChange = false;
                             let isError = false;
@@ -354,8 +353,29 @@
                             this.submiting = false;
                         }
                     });
+                } else if (this.showModel === 'changePassword') {
+                    this.$refs.formPassword.validate((isPass, data) => {
+                        if (isPass) {
+                            console.log('这是你刚提交的数据', data);
+                            this.$ajax.updateSelfPassword({
+                                password: data.password,
+                            }).then(res => {
+                                if (res.code === 200) {
+                                    this.$message.success(res.msg);
+                                } else {
+                                    this.$message.error(res.msg);
+                                }
+                            }).catch(() => {
+                                this.$message.error('服务器错误，请重试或者联系管理员');
+                            }).finally(() => {
+                                this.submiting = false;
+                            });
+                        } else {
+                            this.$message.error('校验失败！');
+                            this.submiting = false;
+                        }
+                    });
                 }
-
             },
         },
         components: {},

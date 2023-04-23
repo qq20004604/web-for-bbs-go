@@ -91,6 +91,12 @@
                         size="small">
                         编辑
                     </el-button>
+                    <el-button
+                        @click.native.prevent="updateUserPassword(scope.row)"
+                        type="text"
+                        size="small">
+                        修改密码
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -142,11 +148,15 @@
                         :user-info="userInfo"
                         :load-user-list="loadUserList"
                         :close-update-user-info="closeUpdateUserInfo"/>
+        <UpdateUserPassword v-if="isUpdatingUserPassword"
+                            :user-info="userInfo"
+                            :close-update-user-info="closeUpdateUserInfo"/>
     </div>
 </template>
 
 <script>
     import UpdateUserInfo from './update_user_info.vue';
+    import UpdateUserPassword from './update_user_password.vue';
 
     export default {
         name: 'UserList',
@@ -159,6 +169,7 @@
                 toStatus: '',
 
                 isUpdatingUserInfo: false,
+                isUpdatingUserPassword: false,
                 userInfo: null,
 
                 multipleSelection: [],
@@ -246,17 +257,24 @@
             },
 
             updateUserInfo (row) {
-                this.isUpdatingUserInfo = true;
                 this.userInfo = row;
+                this.isUpdatingUserInfo = true;
+            },
+            updateUserPassword (row) {
+                console.log('updateUserPassword', row);
+                this.userInfo = row;
+                this.isUpdatingUserPassword = true;
             },
 
             closeUpdateUserInfo () {
                 this.isUpdatingUserInfo = false;
+                this.isUpdatingUserPassword = false;
                 this.userInfo = null;
             },
         },
         components: {
             UpdateUserInfo,
+            UpdateUserPassword,
         },
     };
 </script>

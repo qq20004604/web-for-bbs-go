@@ -46,7 +46,7 @@
                 isLogin: false,
                 LanguageList: i18nConfig.LanguageList,
 
-                activeName: 'manageUser',
+                activeName: 'post',
             };
         },
         computed: {

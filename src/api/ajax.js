@@ -7,9 +7,10 @@
  */
 // import {post} from '../config/http';
 import user from './user';
+import topic from './topic';
 
 const $ajax = {};
-Object.assign($ajax, user);
+Object.assign($ajax, user, topic);
 
 export default {
     install: function (Vue) {

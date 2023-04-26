@@ -2,7 +2,7 @@
     <div id="home">
         <el-tabs v-model="activeName" @tab-click="tabClick">
             <el-tab-pane label="帖子列表" name="post">
-                <PostMain/>
+                <TopicMain/>
             </el-tab-pane>
             <el-tab-pane label="个人信息" name="userinfo">
                 <UserMain/>
@@ -17,7 +17,7 @@
 <script>
 
     import i18nConfig from '@/i18n/main.js';
-    import PostMain from './components/post/post_main.vue';
+    import TopicMain from './components/topic/topic.vue';
     import UserMain from './components/user_info/user_main.vue';
     import ManageUser from './components/manage_user/manage_user.vue';
 
@@ -74,7 +74,7 @@
             },
         },
         components: {
-            PostMain,
+            TopicMain,
             UserMain,
             ManageUser,
         },

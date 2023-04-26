@@ -39,7 +39,7 @@
         data () {
             return {
                 data: {},
-                showModel: 'edit',
+                showModel: 'view',
                 submiting: false,
 
                 viewFields: [
@@ -118,11 +118,6 @@
                                 key: 'website',
                                 type: 'input',
                                 label: '个人网站',
-                            },
-
-                            {
-                                type: 'slot-single',
-                                name: 'register-btn',
                             },
                         ],
                     },
@@ -225,11 +220,6 @@
                                 rules: [
                                     { max: 255, message: '个人网站长度不得超过255个字符', trigger: 'blur' },
                                 ],
-                            },
-
-                            {
-                                type: 'slot-single',
-                                name: 'register-btn',
                             },
                         ],
                     },

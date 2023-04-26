@@ -9,7 +9,7 @@
                         {{ topic.title }}
                     </div>
                     <div class="topic-content">
-                        {{ topic.content }}
+                        {{ topic.content | contentFilter }}
                     </div>
                 </div>
                 <div class="topic-last-reply-time">
@@ -23,12 +23,15 @@
                        :page-size="countPerPage"
                        layout="prev, pager, next, jumper"
                        :total="totalTopic"/>
+        <CreateTopic @getTopicListByPage="getTopicListByPage"/>
     </div>
 </template>
 
 <script>
+    import CreateTopic from './create_topic.vue';
+
     export default {
-        name: 'PostList',
+        name: 'TopicList',
         data () {
             return {
                 topicList: [],
@@ -82,8 +85,17 @@
                     return inputDate.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
                 }
             },
+            contentFilter (content) {
+                if (content.length > 300) {
+                    return content.slice(0, 300);
+                } else {
+                    return content;
+                }
+            },
         },
-        components: {},
+        components: {
+            CreateTopic,
+        },
     };
 </script>
 
@@ -123,9 +135,10 @@
                 position: relative;
                 width: 100%;
                 font-size: 16px;
-                max-height: 300px;
+                max-height: 100px;
                 text-overflow: ellipsis;
                 overflow: hidden;
+                //white-space: nowrap;
             }
         }
 

@@ -5,7 +5,7 @@
  * 功能说明：
  *
  */
-// import {post} from '../config/http';
+// import {topic} from '../config/http';
 import user from './user';
 import topic from './topic';
 

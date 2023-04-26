@@ -155,11 +155,6 @@
                                     { max: 255, message: '个人网站长度不得超过255个字符', trigger: 'blur' },
                                 ],
                             },
-
-                            {
-                                type: 'slot-single',
-                                name: 'register-btn',
-                            },
                         ],
                     },
 

@@ -1,16 +1,16 @@
 <template>
     <div id="post-main">
-        <PostList/>
+        <TopicList/>
     </div>
 </template>
 
 <script>
-    import PostList from './post_list.vue';
+    import TopicList from './topic_list.vue';
 
     export default {
         name: 'PostMain',
         components: {
-            PostList,
+            TopicList,
         },
     };
 </script>
